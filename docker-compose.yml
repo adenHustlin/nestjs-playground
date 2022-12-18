@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - "./:/app"
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - internal
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: classum-app
+    ports:
+      - 3306:3306
+    restart: always
+    networks:
+      - internal
+
+networks:
+  internal:
