@@ -10,8 +10,7 @@ import { TypeormConfig } from './config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { UserModule } from './module/user/user.module';
-
-console.log(`.${__dirname}`);
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +32,7 @@ console.log(`.${__dirname}`);
     PostModule,
     ChatModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

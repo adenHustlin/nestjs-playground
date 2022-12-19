@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultColumns } from './common/default.columns';
 import { Post } from './post.entity';
 
-@Entity({ name: 'post' })
+@Entity({ name: 'post_file' })
 export class PostFile extends DefaultColumns {
   @Column({ type: 'varchar' })
   path: string;
