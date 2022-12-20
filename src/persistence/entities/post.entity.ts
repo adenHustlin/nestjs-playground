@@ -16,7 +16,7 @@ export enum PostType {
 @Entity({ name: 'post' })
 export class Post extends DefaultColumns {
   @Column({ type: 'enum', enum: PostType })
-  postType: PostType;
+  postType: string;
 
   @Column({ type: 'varchar' })
   content: string;

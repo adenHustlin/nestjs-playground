@@ -7,8 +7,8 @@ export class AuthService {
 
   public generateLoginToken(email: string, userId: number) {
     const payload = {
-      userId,
       email,
+      userId,
     };
     return this.jwtService.sign(payload);
   }

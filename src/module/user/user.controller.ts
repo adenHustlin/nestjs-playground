@@ -15,7 +15,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterConfig } from '../../config/multer.config';
 import { Auth } from '../../common/decorator/auth.decorator';
-import { User } from '../../common/decorator/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -31,22 +30,24 @@ export class UserController {
     return await this.userService.login(email, pw);
   }
 
-  @Get(':id')
   @Auth()
-  async findOne(@User() user, @Param('id') id: number) {
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
     return await this.userService.findOne(+id);
   }
 
+  @Auth()
   @Patch(':id')
   @UseInterceptors(FileInterceptor('profileImg', MulterConfig('profileImg')))
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return await this.userService.update(+id, file, updateUserDto);
   }
 
+  @Auth()
   @Delete(':id')
   async softDelete(@Param('id') id: string) {
     return await this.userService.softDelete(+id);

@@ -1,19 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { SpaceService } from './space.service';
-import { CreateSpaceDto } from './dto/create-space.dto';
 import { UpdateSpaceDto } from './dto/update-space.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterConfig } from '../../config/multer.config';
+import { Auth } from '../../common/decorator/auth.decorator';
+import { CreateSpaceDto } from './dto/create-space.dto';
+import { User } from '../../common/decorator/user.decorator';
 
 @Controller('space')
 export class SpaceController {
   constructor(private readonly spaceService: SpaceService) {}
 
+  @Auth()
   @Post()
-  create(@Body() createSpaceDto: CreateSpaceDto) {
-    return this.spaceService.create(createSpaceDto);
+  @UseInterceptors(FileInterceptor('logoImg', MulterConfig('spaceLogoImg')))
+  create(
+    @User() user,
+    @UploadedFile() logoImg: Express.Multer.File,
+    @Body() createSpaceDto: CreateSpaceDto,
+  ) {
+    return this.spaceService.create(user, {
+      ...createSpaceDto,
+      logoImg: logoImg.path,
+    });
   }
 
-  @Get()
-  findAll() {
+  @Post()
+  join(@User() user) {
     return this.spaceService.findAll();
   }
 

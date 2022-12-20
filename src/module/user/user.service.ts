@@ -15,12 +15,13 @@ export class UserService {
     private readonly authService: AuthService,
   ) {}
 
-  async save(createUserDto: CreateUserDto): Promise<User> {
+  async save(createUserDto: CreateUserDto) {
     const { email, pw } = createUserDto;
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) throw new BadRequestException('email exists');
     const hash = await bcrypt.hash(pw, 2);
-    return await this.userRepository.save({ email, pw: hash });
+    const result = await this.userRepository.save({ email, pw: hash });
+    return result.id;
   }
 
   async findOne(id: number) {
