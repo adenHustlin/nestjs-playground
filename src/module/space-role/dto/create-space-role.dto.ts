@@ -7,5 +7,6 @@ export class CreateSpaceRoleDto {
   roleName: string;
 
   @IsEnum(RoleSet)
+  @IsNotEmpty()
   roleSet: RoleSet;
 }

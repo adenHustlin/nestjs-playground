@@ -15,6 +15,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterConfig } from '../../config/multer.config';
 import { Auth } from '../../common/decorator/auth.decorator';
+import { LoginDto } from './dto/login.dto';
+import { User } from '../../common/decorator/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -26,14 +28,14 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() { email, pw }) {
-    return await this.userService.login(email, pw);
+  async login(@Body() body: LoginDto) {
+    return await this.userService.login(body);
   }
 
   @Auth()
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return await this.userService.findOne(+id);
+  async findOne(@User() user, @Param('id') id: number) {
+    return await this.userService.findOne(user, +id);
   }
 
   @Auth()
@@ -44,12 +46,12 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.userService.update(+id, file, updateUserDto);
+    return await this.userService.update(id, file, updateUserDto);
   }
 
   @Auth()
   @Delete(':id')
-  async softDelete(@Param('id') id: string) {
-    return await this.userService.softDelete(+id);
+  async softDelete(@Param('id') token: number) {
+    return await this.userService.softDelete(token);
   }
 }

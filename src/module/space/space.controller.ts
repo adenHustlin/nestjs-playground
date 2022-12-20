@@ -29,15 +29,13 @@ export class SpaceController {
     @UploadedFile() logoImg: Express.Multer.File,
     @Body() createSpaceDto: CreateSpaceDto,
   ) {
-    return this.spaceService.create(user, {
-      ...createSpaceDto,
-      logoImg: logoImg.path,
-    });
+    return this.spaceService.create(user, createSpaceDto, logoImg);
   }
 
-  @Post()
-  join(@User() user) {
-    return this.spaceService.findAll();
+  @Auth()
+  @Post(':code')
+  join(@User() user, @Param('code') code: string) {
+    return this.spaceService.join(user, code);
   }
 
   @Get(':id')

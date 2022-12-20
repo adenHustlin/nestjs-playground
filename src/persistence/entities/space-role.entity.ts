@@ -13,7 +13,7 @@ export class SpaceRole extends DefaultColumns {
   roleName: string;
 
   @Column({ type: 'enum', enum: RoleSet })
-  roleSet: string;
+  roleSet: RoleSet;
 
   @ManyToOne(() => Space, (space) => space.SpaceRoles)
   Space: Space;

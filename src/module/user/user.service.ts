@@ -16,16 +16,36 @@ export class UserService {
   ) {}
 
   async save(createUserDto: CreateUserDto) {
-    const { email, pw } = createUserDto;
+    const { email } = createUserDto;
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) throw new BadRequestException('email exists');
-    const hash = await bcrypt.hash(pw, 2);
-    const result = await this.userRepository.save({ email, pw: hash });
-    return result.id;
+    const userEnt = this.userRepository.create(createUserDto);
+    const savedUser = await this.userRepository.save(userEnt);
+    return savedUser.token;
   }
 
-  async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+  async login(body) {
+    const { email, pw } = body;
+    const user = await this.userRepository.findOne({ email });
+    if (!user) throw new BadRequestException('invalid email');
+    if (!(await bcrypt.compare(pw, user.pw))) throw new BadRequestException();
+
+    return {
+      accessToken: this.authService.generateLoginToken(user.token, user.email),
+    };
+  }
+
+  async findOne(reqUser: User, id: number) {
+    if (id === reqUser.id) return reqUser;
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+    delete user.email;
+    return user;
+  }
+
+  async findOneForJwtValidation(token: string, email: string) {
+    return await this.userRepository.findOne({ where: { token, email } });
   }
 
   async update(
@@ -42,13 +62,5 @@ export class UserService {
 
   async softDelete(id: number) {
     return await this.userRepository.softDelete({ id });
-  }
-
-  async login(email, pw) {
-    const user = await this.userRepository.findOne({ email });
-    if (!user) throw new BadRequestException('invalid email');
-    if (!(await bcrypt.compare(pw, user.pw))) throw new BadRequestException();
-
-    return { accessToken: this.authService.generateLoginToken(email, user.id) };
   }
 }

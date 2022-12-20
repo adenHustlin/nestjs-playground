@@ -1,7 +1,8 @@
 import { FindManyOptions } from 'typeorm';
 
-export const uuid = (length) => {
-  const char = 'abcdefghijklmnopqrstuvwxyz';
+export const SpaceCodeGenerator = (length) => {
+  const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+  const char = lowerCase + lowerCase.toUpperCase();
   const int = '1234567890';
   let result = '';
   for (let i = 0; i < length; i++) {

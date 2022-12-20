@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { SpaceRoleService } from './space-role.service';
 import { CreateSpaceRoleDto } from './dto/create-space-role.dto';
 import { UpdateSpaceRoleDto } from './dto/update-space-role.dto';
+import { Auth } from '../../common/decorator/auth.decorator';
 
 @Controller('space-role')
 export class SpaceRoleController {
@@ -12,6 +21,7 @@ export class SpaceRoleController {
     return this.spaceRoleService.create(createSpaceRoleDto);
   }
 
+  @Auth()
   @Get()
   findAll() {
     return this.spaceRoleService.findAll();
@@ -23,7 +33,10 @@ export class SpaceRoleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSpaceRoleDto: UpdateSpaceRoleDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSpaceRoleDto: UpdateSpaceRoleDto,
+  ) {
     return this.spaceRoleService.update(+id, updateSpaceRoleDto);
   }
 
