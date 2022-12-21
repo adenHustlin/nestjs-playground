@@ -17,7 +17,7 @@ export class UserService {
 
   async save(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ email });
     if (user) throw new BadRequestException('email exists');
     const userEnt = this.userRepository.create(createUserDto);
     const savedUser = await this.userRepository.save(userEnt);
@@ -40,6 +40,7 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { id },
     });
+    if (!user) throw new BadRequestException('invalid user id');
     delete user.email;
     return user;
   }
@@ -53,10 +54,9 @@ export class UserService {
     file: Express.Multer.File,
     updateUserDto: UpdateUserDto,
   ) {
-    const { path: profileImg } = file;
     return await this.userRepository.update(
       { id },
-      { ...updateUserDto, profileImg },
+      { ...updateUserDto, profileImg: file?.path },
     );
   }
 

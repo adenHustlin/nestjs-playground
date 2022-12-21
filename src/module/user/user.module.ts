@@ -8,7 +8,7 @@ import { User } from '../../persistence/entities/user.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
   controllers: [UserController],
-  providers: [UserService, User],
-  exports: [UserService, User],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

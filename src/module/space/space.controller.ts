@@ -16,6 +16,10 @@ import { MulterConfig } from '../../config/multer.config';
 import { Auth } from '../../common/decorator/auth.decorator';
 import { CreateSpaceDto } from './dto/create-space.dto';
 import { User } from '../../common/decorator/user.decorator';
+import { CreateSpaceRoleDto } from '../space-role/dto/create-space-role.dto';
+import { Role } from '../../common/decorator/role.decorator';
+import { Space } from '../../persistence/entities/space.entity';
+import { SpaceRoleSet } from '../../common/constatns';
 
 @Controller('space')
 export class SpaceController {
@@ -34,13 +38,17 @@ export class SpaceController {
 
   @Auth()
   @Post(':code')
-  join(@User() user, @Param('code') code: string) {
-    return this.spaceService.join(user, code);
+  join(
+    @User() user,
+    @Param('code') code: string,
+    @Body() body: Partial<CreateSpaceRoleDto>,
+  ) {
+    return this.spaceService.join(user, code, body);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.spaceService.findOne(+id);
+  @Get(':code')
+  findOne(@Param('code') code: string) {
+    return this.spaceService.findOne(code);
   }
 
   @Patch(':id')
@@ -48,6 +56,7 @@ export class SpaceController {
     return this.spaceService.update(+id, updateSpaceDto);
   }
 
+  @Role(Space, SpaceRoleSet.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.spaceService.remove(+id);

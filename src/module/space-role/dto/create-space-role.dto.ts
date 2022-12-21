@@ -1,12 +1,14 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { RoleSet } from '../../../persistence/entities/space-role.entity';
+import { SpaceRoleSet } from '../../../common/constatns';
 
 export class CreateSpaceRoleDto {
+  id?: number;
+
   @IsString()
   @IsNotEmpty()
   roleName: string;
 
-  @IsEnum(RoleSet)
+  @IsEnum(SpaceRoleSet)
   @IsNotEmpty()
-  roleSet: RoleSet;
+  roleSet: SpaceRoleSet;
 }

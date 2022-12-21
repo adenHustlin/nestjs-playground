@@ -8,6 +8,7 @@ export class CreateSpaceDto {
   name: string;
 
   logoImg: string;
+
   @IsNotEmpty()
   @IsString()
   creatorRoleName: string;

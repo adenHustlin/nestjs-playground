@@ -1,19 +1,15 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Space } from './space.entity';
 import { DefaultColumns } from './common/default.columns';
-
-export enum RoleSet {
-  ADMIN = 'admin',
-  PARTICIPANT = 'participant',
-}
+import { SpaceRoleSet } from '../../common/constatns';
 
 @Entity({ name: 'space_role' })
 export class SpaceRole extends DefaultColumns {
   @Column({ type: 'varchar' })
   roleName: string;
 
-  @Column({ type: 'enum', enum: RoleSet })
-  roleSet: RoleSet;
+  @Column({ type: 'enum', enum: SpaceRoleSet })
+  roleSet: SpaceRoleSet;
 
   @ManyToOne(() => Space, (space) => space.SpaceRoles)
   Space: Space;

@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Patch,
-  Post,
+  Put,
 } from '@nestjs/common';
 import { SpaceRoleService } from './space-role.service';
 import { CreateSpaceRoleDto } from './dto/create-space-role.dto';
@@ -16,15 +16,15 @@ import { Auth } from '../../common/decorator/auth.decorator';
 export class SpaceRoleController {
   constructor(private readonly spaceRoleService: SpaceRoleService) {}
 
-  @Post()
+  @Put(':id')
   create(@Body() createSpaceRoleDto: CreateSpaceRoleDto) {
     return this.spaceRoleService.create(createSpaceRoleDto);
   }
 
   @Auth()
-  @Get()
-  findAll() {
-    return this.spaceRoleService.findAll();
+  @Get(':code')
+  findAssociatedRoles(@Param('code') code: string) {
+    return this.spaceRoleService.findAllWithSpaceCode(code);
   }
 
   @Get(':id')
