@@ -4,7 +4,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CreateSpaceDto } from './dto/create-space.dto';
-import { UpdateSpaceDto } from './dto/update-space.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Space } from '../../persistence/entities/space.entity';
 import { Connection, Repository } from 'typeorm';
@@ -12,8 +11,8 @@ import { User } from '../../persistence/entities/user.entity';
 import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 import { SpaceRole } from '../../persistence/entities/space-role.entity';
 import { SpaceCodeGenerator } from '../../common/function/common.functions';
-import { CreateSpaceRoleDto } from '../space-role/dto/create-space-role.dto';
 import { DefaultSpaceRoleName, SpaceRoleSet } from '../../common/constatns';
+import { JoinSpaceDto } from './dto/join-space.dto';
 
 @Injectable()
 export class SpaceService {
@@ -75,7 +74,7 @@ export class SpaceService {
     return savedSpace.id;
   }
 
-  async join(user: User, code: string, body: Partial<CreateSpaceRoleDto>) {
+  async join(user: User, code: string, body: JoinSpaceDto) {
     const { roleName, roleSet } = body;
 
     const space = await this.spaceRepository.findOne({
@@ -105,15 +104,11 @@ export class SpaceService {
     }
     if (!spaceRole) throw new BadRequestException('invalid space-role info');
 
-    // spaceRole = this.spaceRoleRepository.create({
-    //   roleSet: SpaceRoleSet.ADMIN,
-    //   ...spaceRole,
-    // });
-
     const userToSpaceEnt = this.userToSpaceRepository.create({
       User: user,
       Space: space,
       SpaceRole: spaceRole,
+      roleSet: roleSet,
     });
     const savedUserToSpace = await this.userToSpaceRepository.save(
       userToSpaceEnt,
@@ -122,19 +117,19 @@ export class SpaceService {
     return savedUserToSpace.id;
   }
 
-  findAll() {
-    return `This action returns all space`;
+  async remove(id: number) {
+    return await this.spaceRepository.softRemove(
+      await this.spaceRepository.findOne({
+        where: { id },
+        relations: ['SpaceRoles', 'UserToSpaces', 'Posts'],
+      }),
+    );
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} space`;
-  }
-
-  update(id: number, updateSpaceDto: UpdateSpaceDto) {
-    return `This action updates a #${id} space`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} space`;
+  async findOne(user, id: number) {
+    return await this.spaceRepository.findOne({
+      where: { id },
+      relations: ['SpaceRoles', 'UserToSpaces', 'Posts'],
+    });
   }
 }

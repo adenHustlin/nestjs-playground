@@ -11,6 +11,6 @@ export class SpaceRole extends DefaultColumns {
   @Column({ type: 'enum', enum: SpaceRoleSet })
   roleSet: SpaceRoleSet;
 
-  @ManyToOne(() => Space, (space) => space.SpaceRoles)
+  @ManyToOne(() => Space, (space) => space.SpaceRoles, { cascade: ['update'] })
   Space: Space;
 }

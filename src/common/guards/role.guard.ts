@@ -1,34 +1,37 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Chat } from '../../persistence/entities/chat.entity';
-import { Space } from '../../persistence/entities/space.entity';
+import {
+  CanActivate,
+  ExecutionContext,
+  mixin,
+  Type,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SpaceRoleSet } from '../constatns';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
+import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 
-@Injectable()
-export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    @InjectRepository(Space)
-    private readonly spaceRepository: Repository<Space>,
-    @InjectRepository(Chat) private readonly chatRepository: Repository<Chat>,
-  ) {}
+export const RoleGuard = (entity, roles: SpaceRoleSet[]): Type<CanActivate> => {
+  class RoleGuardMixin implements CanActivate {
+    constructor(
+      @InjectRepository(entity)
+      private readonly repo: Repository<typeof entity>,
+    ) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<SpaceRoleSet[]>(
-      'roles',
-      context.getHandler(),
-    );
-    const entity = this.reflector.get('entity', context.getHandler());
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-
-    if (!roles || !entity || !user) {
-      return false;
+    async canActivate(context: ExecutionContext) {
+      const { user, params } = context.switchToHttp().getRequest();
+      switch (entity) {
+        case UserToSpace:
+          const userToSpace: UserToSpace = await this.repo.findOne({
+            where: { Space: params.id, roleSet: In(roles), User: user },
+          });
+          if (!userToSpace)
+            throw new UnauthorizedException(`${roles} authority required`);
+          return true;
+        default:
+          return false;
+      }
     }
-
-    return false;
-    // return matchRoles(roles, user.roles);
   }
-}
+
+  return mixin(RoleGuardMixin);
+};

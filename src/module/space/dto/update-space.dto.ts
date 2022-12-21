@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { Space } from '../../../persistence/entities/space.entity';
+import { CreateSpaceDto } from './create-space.dto';
 
-export class UpdateSpaceDto extends PartialType(Space) {}
+export class UpdateSpaceDto extends PartialType(CreateSpaceDto) {}

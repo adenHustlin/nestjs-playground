@@ -7,16 +7,14 @@ import {
   Patch,
   Post,
   UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterConfig } from '../../config/multer.config';
 import { Auth } from '../../common/decorator/auth.decorator';
 import { LoginDto } from './dto/login.dto';
 import { User } from '../../common/decorator/user.decorator';
+import { fileInterceptor } from '../../common/decorator/file.decorator';
 
 @Controller('user')
 export class UserController {
@@ -40,7 +38,7 @@ export class UserController {
 
   @Auth()
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('profileImg', MulterConfig('profileImg')))
+  @fileInterceptor('profileImg', 'profileImg')
   async update(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,

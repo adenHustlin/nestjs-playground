@@ -1,7 +1,7 @@
 export enum SpaceRoleSet {
-  CREATOR = 'creator',
   ADMIN = 'admin',
   PARTICIPANT = 'participant',
+  CREATOR = 'creator',
 }
 
 export enum DefaultSpaceRoleName {

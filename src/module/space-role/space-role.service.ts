@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSpaceRoleDto } from './dto/create-space-role.dto';
-import { UpdateSpaceRoleDto } from './dto/update-space-role.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SpaceRole } from '../../persistence/entities/space-role.entity';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { Space } from '../../persistence/entities/space.entity';
 import { SpaceRoleSet } from '../../common/constatns';
+import { UpdateSpaceRoleDto } from './dto/update-space-role.dto';
+import { User } from '../../persistence/entities/user.entity';
 
 @Injectable()
 export class SpaceRoleService {
@@ -14,27 +14,8 @@ export class SpaceRoleService {
     private readonly spaceRoleRepository: Repository<SpaceRole>,
     @InjectRepository(Space)
     private readonly spaceRepository: Repository<Space>,
+    private readonly connection: Connection,
   ) {}
-
-  create(createSpaceRoleDto: CreateSpaceRoleDto) {
-    return 'This action adds a new spaceRole';
-  }
-
-  findAll() {
-    return `This action returns all spaceRole`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} spaceRole`;
-  }
-
-  update(id: number, updateSpaceRoleDto: UpdateSpaceRoleDto) {
-    return `This action updates a #${id} spaceRole`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} spaceRole`;
-  }
 
   async findAllWithSpaceCode(code: string) {
     const space = await this.spaceRepository.findOne({
@@ -51,5 +32,26 @@ export class SpaceRoleService {
           (role) => role.roleSet === SpaceRoleSet.PARTICIPANT,
         );
     }
+  }
+
+  async update(user: User, id: number, body: UpdateSpaceRoleDto) {
+    const space = await this.spaceRepository.findOne({
+      where: { id },
+      relations: ['SpaceRoles'],
+    });
+    if (!space) throw new BadRequestException('invalid space Id');
+    const result = await this.connection.transaction(async (entityManager) => {
+      if (space.SpaceRoles.length > 0) {
+        await entityManager.softDelete(
+          SpaceRole,
+          space.SpaceRoles.map((role) => role.id),
+        );
+      }
+      return await entityManager.insert(
+        SpaceRole,
+        body.SpaceRoles.map((spaceRole) => ({ ...spaceRole, Space: space })),
+      );
+    });
+    return result;
   }
 }

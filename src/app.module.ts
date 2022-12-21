@@ -25,7 +25,6 @@ import { UserModule } from './module/user/user.module';
     ChatModule,
     UserModule,
     AuthModule,
-    // GuardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
