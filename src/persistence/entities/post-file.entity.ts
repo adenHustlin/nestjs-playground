@@ -7,9 +7,6 @@ export class PostFile extends DefaultColumns {
   @Column({ type: 'varchar' })
   path: string;
 
-  @Column({ type: 'varchar' })
-  extension: string;
-
   @ManyToOne(() => Post, (post) => post.Files)
   Post: Post;
 }

@@ -24,7 +24,7 @@ export class SpaceController {
   // @Auth()
   @Auth()
   @Post()
-  @fileInterceptor('logoImg', 'spaceLogoImg')
+  @fileInterceptor('logoImg', 'spaceLogoImg', false)
   create(
     @User() user,
     @UploadedFile() logoImg: Express.Multer.File,
@@ -33,23 +33,25 @@ export class SpaceController {
     return this.spaceService.create(user, createSpaceDto, logoImg);
   }
 
-  @Role(UserToSpace, [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN])
+  @Auth()
   @Post(':code')
   join(@User() user, @Param('code') code: string, @Body() body: JoinSpaceDto) {
     return this.spaceService.join(user, code, body);
   }
 
-  @Role(UserToSpace, [
-    SpaceRoleSet.CREATOR,
-    SpaceRoleSet.ADMIN,
-    SpaceRoleSet.PARTICIPANT,
-  ])
+  @Auth()
+  @Role(
+    UserToSpace,
+    [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN, SpaceRoleSet.PARTICIPANT],
+    'id',
+  )
   @Get(':id')
   findOne(@User() user, @Param('id') id: number) {
     return this.spaceService.findOne(user, +id);
   }
 
-  @Role(UserToSpace, [SpaceRoleSet.CREATOR])
+  @Auth()
+  @Role(UserToSpace, [SpaceRoleSet.CREATOR], 'id')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.spaceService.remove(+id);

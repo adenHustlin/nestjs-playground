@@ -11,7 +11,7 @@ import { User } from '../../persistence/entities/user.entity';
 import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 import { SpaceRole } from '../../persistence/entities/space-role.entity';
 import { SpaceCodeGenerator } from '../../common/function/common.functions';
-import { DefaultSpaceRoleName, SpaceRoleSet } from '../../common/constatns';
+import { SpaceRoleSet } from '../../common/constatns';
 import { JoinSpaceDto } from './dto/join-space.dto';
 
 @Injectable()
@@ -43,11 +43,6 @@ export class SpaceService {
         where: [{ adminCode }, { participantCode }],
       });
     }
-
-    createSpaceDto.SpaceRoles.push({
-      roleSet: SpaceRoleSet.PARTICIPANT,
-      roleName: DefaultSpaceRoleName.ANONYMOUS,
-    });
 
     const spaceEnt = this.spaceRepository.create({
       ...createSpaceDto,

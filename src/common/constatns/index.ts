@@ -4,6 +4,7 @@ export enum SpaceRoleSet {
   CREATOR = 'creator',
 }
 
-export enum DefaultSpaceRoleName {
-  ANONYMOUS = '익명',
+export enum PostType {
+  NOTICE = 'notice',
+  QUESTION = 'question',
 }

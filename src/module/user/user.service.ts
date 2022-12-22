@@ -36,7 +36,7 @@ export class UserService {
   }
 
   async findOne(reqUser: User, id: number) {
-    if (id === reqUser.id) return reqUser;
+    if (id === Number(reqUser.id)) return reqUser;
     const user = await this.userRepository.findOne({
       where: { id },
     });

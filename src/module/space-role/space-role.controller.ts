@@ -17,7 +17,8 @@ export class SpaceRoleController {
     return this.spaceRoleService.findAllWithSpaceCode(code);
   }
 
-  @Role(UserToSpace, [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN])
+  @Auth()
+  @Role(UserToSpace, [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN], 'id')
   @Put(':id')
   update(
     @User() user,

@@ -38,7 +38,7 @@ export class UserController {
 
   @Auth()
   @Patch(':id')
-  @fileInterceptor('profileImg', 'profileImg')
+  @fileInterceptor('profileImg', 'profileImg', false)
   async update(
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
