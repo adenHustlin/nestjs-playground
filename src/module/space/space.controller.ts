@@ -8,14 +8,13 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { SpaceService } from './space.service';
-import { Role } from '../../common/decorator/role.decorator';
 import { SpaceRoleSet } from '../../common/constatns';
-import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 import { fileInterceptor } from '../../common/decorator/file.decorator';
 import { User } from '../../common/decorator/user.decorator';
 import { JoinSpaceDto } from './dto/join-space.dto';
 import { CreateSpaceDto } from './dto/create-space.dto';
 import { Auth } from '../../common/decorator/auth.decorator';
+import { SpaceRole } from '../../common/decorator/space-role.decorator';
 
 @Controller('space')
 export class SpaceController {
@@ -39,19 +38,19 @@ export class SpaceController {
     return this.spaceService.join(user, code, body);
   }
 
+  @SpaceRole([
+    SpaceRoleSet.CREATOR,
+    SpaceRoleSet.ADMIN,
+    SpaceRoleSet.PARTICIPANT,
+  ])
   @Auth()
-  @Role(
-    UserToSpace,
-    [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN, SpaceRoleSet.PARTICIPANT],
-    'id',
-  )
   @Get(':id')
   findOne(@User() user, @Param('id') id: number) {
     return this.spaceService.findOne(user, +id);
   }
 
+  @SpaceRole([SpaceRoleSet.CREATOR])
   @Auth()
-  @Role(UserToSpace, [SpaceRoleSet.CREATOR], 'id')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.spaceService.remove(+id);

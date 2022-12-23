@@ -7,6 +7,6 @@ export class PostFile extends DefaultColumns {
   @Column({ type: 'varchar' })
   path: string;
 
-  @ManyToOne(() => Post, (post) => post.Files)
+  @ManyToOne(() => Post, (post) => post.Files, { onUpdate: 'CASCADE' })
   Post: Post;
 }

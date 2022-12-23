@@ -10,34 +10,31 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 
-export const RoleGuard = (
-  entity,
+export const SpaceRoleGuard = (
   roles: SpaceRoleSet[],
-  spaceIdProperty: string,
+  property: string,
 ): Type<CanActivate> => {
   class RoleGuardMixin implements CanActivate {
     constructor(
-      @InjectRepository(entity)
-      private readonly repo: Repository<typeof entity>,
+      @InjectRepository(UserToSpace)
+      private readonly userToSpaceRepository: Repository<UserToSpace>,
     ) {}
 
     async canActivate(context: ExecutionContext) {
       const { user, params } = context.switchToHttp().getRequest();
-      switch (entity) {
-        case UserToSpace:
-          const userToSpace: UserToSpace = await this.repo.findOne({
-            where: {
-              Space: params[spaceIdProperty],
-              roleSet: In(roles),
-              User: user,
-            },
-          });
-          if (!userToSpace)
-            throw new UnauthorizedException(`${roles} authority required`);
-          return true;
-        default:
-          return false;
-      }
+
+      const userToSpace: UserToSpace = await this.userToSpaceRepository.findOne(
+        {
+          where: {
+            Space: params[property],
+            roleSet: In(roles),
+            User: user,
+          },
+        },
+      );
+      if (!userToSpace)
+        throw new UnauthorizedException(`${roles} authority required`);
+      return true;
     }
   }
 

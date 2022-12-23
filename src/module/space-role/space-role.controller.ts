@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { SpaceRoleService } from './space-role.service';
 import { Auth } from '../../common/decorator/auth.decorator';
-import { Role } from '../../common/decorator/role.decorator';
-import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
-import { SpaceRoleSet } from '../../common/constatns';
 import { User } from '../../common/decorator/user.decorator';
 import { UpdateSpaceRoleDto } from './dto/update-space-role.dto';
+import { SpaceRole } from '../../common/decorator/space-role.decorator';
+import { SpaceRoleSet } from '../../common/constatns';
 
 @Controller('space-role')
 export class SpaceRoleController {
@@ -17,14 +16,14 @@ export class SpaceRoleController {
     return this.spaceRoleService.findAllWithSpaceCode(code);
   }
 
+  @SpaceRole([SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN], 'spaceId')
   @Auth()
-  @Role(UserToSpace, [SpaceRoleSet.CREATOR, SpaceRoleSet.ADMIN], 'id')
-  @Put(':id')
+  @Put(':spaceId')
   update(
     @User() user,
-    @Param('id') id: number,
+    @Param() spaceId: number,
     @Body() body: UpdateSpaceRoleDto,
   ) {
-    return this.spaceRoleService.update(user, +id, body);
+    return this.spaceRoleService.update(user, spaceId, body);
   }
 }

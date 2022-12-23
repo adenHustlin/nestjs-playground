@@ -6,6 +6,7 @@ import { Space } from '../../persistence/entities/space.entity';
 import { SpaceRoleSet } from '../../common/constatns';
 import { UpdateSpaceRoleDto } from './dto/update-space-role.dto';
 import { User } from '../../persistence/entities/user.entity';
+import { UserToSpace } from '../../persistence/entities/user-to-space.entity';
 
 @Injectable()
 export class SpaceRoleService {
@@ -14,6 +15,8 @@ export class SpaceRoleService {
     private readonly spaceRoleRepository: Repository<SpaceRole>,
     @InjectRepository(Space)
     private readonly spaceRepository: Repository<Space>,
+    @InjectRepository(UserToSpace)
+    private readonly userToSpaceRepository: Repository<UserToSpace>,
     private readonly connection: Connection,
   ) {}
 
@@ -40,6 +43,7 @@ export class SpaceRoleService {
       relations: ['SpaceRoles'],
     });
     if (!space) throw new BadRequestException('invalid space Id');
+
     const result = await this.connection.transaction(async (entityManager) => {
       if (space.SpaceRoles.length > 0) {
         await entityManager.softDelete(

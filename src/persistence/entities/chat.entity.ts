@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { DefaultColumns } from './common/default.columns';
 import { Post } from './post.entity';
+import { UserToSpace } from './user-to-space.entity';
 
 @Entity({ name: 'chat' })
 export class Chat extends DefaultColumns {
@@ -13,9 +14,10 @@ export class Chat extends DefaultColumns {
   @ManyToOne(() => Post, (post) => post.Chats)
   Post: Post;
 
-  @ManyToOne(() => Chat, (chat) => chat.childChat)
+  @OneToOne(() => Chat, (chat) => chat.id)
+  @JoinColumn()
   ParentChat: Chat;
 
-  @OneToMany(() => Chat, (chat) => chat.ParentChat)
-  childChat: Chat[];
+  @ManyToOne(() => UserToSpace, (userToSpace) => userToSpace.id)
+  UserToSpace: UserToSpace;
 }

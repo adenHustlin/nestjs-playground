@@ -2,7 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const TypeormConfig: TypeOrmModuleOptions = {
   // 타임존옵션을 맨위에안주면 적용이안되는 버그가있음
-  timezone: 'Z',
+  timezone: 'local',
   type: 'mysql',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -11,6 +11,6 @@ export const TypeormConfig: TypeOrmModuleOptions = {
   database: process.env.DB_DATABASE,
   autoLoadEntities: true,
   charset: 'utf8mb4',
-  synchronize: false,
-  logging: true,
+  synchronize: true,
+  // logging: true,
 };

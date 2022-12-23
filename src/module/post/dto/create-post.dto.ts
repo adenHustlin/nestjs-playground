@@ -1,7 +1,10 @@
 import { PostType } from '../../../common/constatns';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreatePostDto {
+  id?: number;
+
   @IsEnum(PostType)
   @IsNotEmpty()
   postType: PostType;
@@ -10,6 +13,8 @@ export class CreatePostDto {
   @IsNotEmpty()
   content: string;
 
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
   anonymous: boolean;
 
   @IsNotEmpty()

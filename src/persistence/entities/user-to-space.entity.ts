@@ -11,9 +11,7 @@ export class UserToSpace extends DefaultColumns {
   @Column({ type: 'enum', enum: SpaceRoleSet })
   roleSet: SpaceRoleSet;
 
-  @ManyToOne(() => SpaceRole, (spaceRole) => spaceRole.id, {
-    // cascade: ['insert'],
-  })
+  @ManyToOne(() => SpaceRole, (spaceRole) => spaceRole.id)
   SpaceRole: SpaceRole;
 
   @ManyToOne(() => User, (user) => user.UserToSpaces, { eager: true })

@@ -36,12 +36,19 @@ export class UserService {
   }
 
   async findOne(reqUser: User, id: number) {
-    if (id === Number(reqUser.id)) return reqUser;
+    if (id === Number(reqUser.id)) {
+      return {
+        id: reqUser.id,
+        lasName: reqUser.lastName,
+        firstName: reqUser.firstName,
+        email: reqUser.email,
+        profileImg: reqUser.profileImg,
+      };
+    }
     const user = await this.userRepository.findOne({
       where: { id },
     });
     if (!user) throw new BadRequestException('invalid user id');
-    delete user.email;
     return user;
   }
 

@@ -1,6 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Post } from './post.entity';
-import { User } from './user.entity';
+import { UserToSpace } from './user-to-space.entity';
 
 // 1번 ,2번 유저 존재
 // 1번유저만 읽고 글에 새로운댓글달림
@@ -14,15 +20,16 @@ import { User } from './user.entity';
 // case 글의 가장최근 댓글이 읽은시간 이후에 달림 : return 댓글새거있습니다.
 
 @Entity({ name: 'post_view' })
+@Index(['UserToSpace', 'Post'], { unique: true })
 export class PostView {
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
   id: number;
 
-  @Column({ type: 'datetime' })
+  @UpdateDateColumn()
   readTime: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  User: User;
+  @ManyToOne(() => UserToSpace, (userToSpace) => userToSpace.id)
+  UserToSpace: UserToSpace;
 
   @ManyToOne(() => Post, (post) => post.id)
   Post: Post;

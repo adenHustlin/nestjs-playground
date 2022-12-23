@@ -1,5 +1,3 @@
-import { FindManyOptions } from 'typeorm';
-
 export const SpaceCodeGenerator = (length) => {
   const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
   const char = lowerCase + lowerCase.toUpperCase();
@@ -18,10 +16,7 @@ export const randomNumber = (max: number) => {
   return Math.floor(Math.random() * max);
 };
 
-export const paginationOptions = (
-  page: number,
-  pageSize: number,
-): FindManyOptions => ({
+export const paginationOptions = (page: number, pageSize: number) => ({
   take: pageSize,
   skip: pageSize * (page - 1),
 });

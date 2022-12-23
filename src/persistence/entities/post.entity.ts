@@ -18,11 +18,13 @@ export class Post extends DefaultColumns {
   anonymous: boolean;
 
   @OneToMany(() => PostFile, (postFile) => postFile.Post, {
-    cascade: ['insert', 'update', 'soft-remove'],
+    cascade: ['insert', 'soft-remove'],
   })
   Files: PostFile[];
 
-  @OneToMany(() => Chat, (chat) => chat.Post)
+  @OneToMany(() => Chat, (chat) => chat.Post, {
+    cascade: ['insert', 'soft-remove'],
+  })
   Chats: Chat[];
 
   @ManyToOne(() => Space, (space) => space.Posts)

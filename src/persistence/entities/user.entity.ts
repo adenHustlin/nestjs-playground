@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 @Entity({ name: 'user' })
 export class User extends DefaultColumns {
   @Column({ type: 'varchar', unique: true })
+  @Exclude()
   email: string;
 
   @Column({ type: 'varchar' })
