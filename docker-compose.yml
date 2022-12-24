@@ -1,11 +1,17 @@
+volumes:
+  node_modules:
+
 services:
   backend:
-    image: node:16.13.2
-    command: sh -c "npm i && npm run start:dev"
-
+    image: node:${NODE_VERSION}
+    command: sh -c "npm i && npm run start:${NODE_ENV}"
+    ports:
+      - 3000:3000
     working_dir: /app
     volumes:
-      - "./:/app"
+      - ./:/app
+      - node_modules:/app/node_modules
+
     restart: always
     depends_on:
       - db
@@ -18,13 +24,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: app
+      TZ: Asia/Seoul
     ports:
       - 3307:3306
     volumes:
-      - "./dbVolume/dev:/var/lib/mysql"
+      - ./dbVolume/${NODE_ENV}:/var/lib/mysql
     restart: always
     networks:
       - internal
 
 networks:
   internal:
+
+

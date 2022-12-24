@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { SpaceRoleSet } from '../../../common/constatns';
 
 export class CreateSpaceRoleDto {
-  id?: number;
+  spaceId: number;
 
   @IsString()
   @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { DefaultColumns } from './common/default.columns';
 import { Post } from './post.entity';
 import { UserToSpace } from './user-to-space.entity';
@@ -14,7 +14,7 @@ export class Chat extends DefaultColumns {
   @ManyToOne(() => Post, (post) => post.Chats)
   Post: Post;
 
-  @OneToOne(() => Chat, (chat) => chat.id)
+  @ManyToOne(() => Chat, (chat) => chat.id)
   @JoinColumn()
   ParentChat: Chat;
 

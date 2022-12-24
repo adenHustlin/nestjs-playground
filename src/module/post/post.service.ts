@@ -147,7 +147,7 @@ export class PostService {
   }
 
   async findOne(user, id: number) {
-    const post = await this.postRepository.findOne({
+    let post = await this.postRepository.findOne({
       where: { id },
       relations: [
         'Space',
@@ -169,7 +169,7 @@ export class PostService {
     const postView = await this.postViewRepository.findOne({
       where: { Post: post, UserToSpace: userToSpace },
     });
-
+    post = this.excludeUserForAnonymous(post, userToSpace);
     const result = [];
     for (const chat of post.Chats) {
       const filteredChat = this.excludeUserForAnonymous(chat, userToSpace);
