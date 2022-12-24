@@ -3,7 +3,7 @@ volumes:
 
 services:
   backend:
-    image: node:${NODE_VERSION}
+    image: node:16.13.2
     command: sh -c "npm i && npm run start:${NODE_ENV}"
     ports:
       - 3000:3000
