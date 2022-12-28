@@ -35,15 +35,7 @@ $ NODE_ENV=dev docker compose up --build
 $ NODE_ENV=prod docker compose up --build
 
 #postman
-첨부드린 포스트맨 Json 파일을 postman에 import 해주세요
-
-#postman environment
-포스트맨내에서 environments 탭에 들어가신후 environment 생성후 token 이란이름으로 variable을 만들어주세요
-
-#local 
-1. .env 파일에 DB관련 변수들을 로컬환경에맞게 변경해주세요
-2. node_modules 폴더를 삭제해주시고 다시 npm i 해주세요
-3. npm run start:dev
+import postman.json file  
 ```
 
 ## Support
